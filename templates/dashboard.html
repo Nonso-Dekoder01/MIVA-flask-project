@@ -1,0 +1,85 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My To-Do List</title>
+
+  <!-- Bootstrap CSS for styling -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom inline CSS for light design improvements -->
+  <style>
+    body {
+      background: #f8f9fa; /* Light grey background */
+    }
+    .todo-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    }
+    .task-completed {
+      text-decoration: line-through; /* Strike-through for completed tasks */
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container mt-5">
+    <!-- Page Heading -->
+    <h2 class="text-center mb-4">📝 My To-Do List</h2>
+
+    <!-- Add Task Form -->
+    <div class="todo-card mb-4">
+      <!-- This form sends a POST request to /add -->
+      <form action="/add" method="POST" class="row g-3">
+        <div class="col-9">
+          <!-- Task input field -->
+          <input type="text" name="task" class="form-control" placeholder="Enter a new task" required>
+        </div>
+        <div class="col-3">
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary w-100">Add Task</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Display Tasks if Available -->
+    {% if tasks %}
+      <!-- Loop through all tasks and show them as list items -->
+      <div class="list-group">
+        {% for task in tasks %}
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            
+            <!-- Task Name: apply strike-through if completed -->
+            <div class="{{ 'task-completed' if task.completed else '' }}">
+              {{ task.name }}
+            </div>
+
+            <!-- Action Buttons: Complete and Delete -->
+            <div>
+              {% if not task.completed %}
+                <!-- Only show "Complete" button if task is not yet completed -->
+                <a href="/complete/{{ task.id }}" class="btn btn-sm btn-success">Complete</a>
+              {% endif %}
+              <!-- Delete button -->
+              <a href="/delete/{{ task.id }}" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+    {% else %}
+      <!-- Message when there are no tasks -->
+      <div class="alert alert-info text-center">No tasks yet. Add one above!</div>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>
+
